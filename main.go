@@ -20,7 +20,7 @@
 
 package main
 
-import "github.com/haraldringvold/cmsstatus/cmd"
+import "github.com/haraldringvold/enonicstatus/cmd"
 
 func main() {
 	cmd.Execute()
