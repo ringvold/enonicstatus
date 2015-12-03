@@ -29,10 +29,12 @@ import (
 )
 
 var cfgFile string
+var hosts string
+var path string
 
 // This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "cmsstatus",
+	Use:   "enonicstatus",
 	Short: "A brief description of your application",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
@@ -61,10 +63,13 @@ func init() {
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cmsstatus.yaml)")
-	// Cobra also supports local flags, which will only run
+  RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cmsstatus.yaml)")
+  RootCmd.PersistentFlags().StringVar(&hosts, "hosts", "", "enonic nodes to check")
+  RootCmd.PersistentFlags().StringVar(&path, "jsonPath", "", "path on host to status json")
+
+  // Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -73,8 +78,9 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
-	viper.SetConfigName(".cmsstatus") // name of config file (without extension)
-	viper.AddConfigPath("$HOME")  // adding home directory as first search path
+	viper.SetConfigName(".enonicstatus") // name of config file (without extension)
+  viper.AddConfigPath("$HOME")  // adding home directory as first search path
+	viper.AddConfigPath(".") // current directory
 	viper.AutomaticEnv()          // read in environment variables that match
 
 	// If a config file is found, read it in.
