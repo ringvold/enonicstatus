@@ -63,11 +63,11 @@ func init() {
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
 
-  RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cmsstatus.yaml)")
-  RootCmd.PersistentFlags().StringVar(&hosts, "hosts", "", "enonic nodes to check")
-  RootCmd.PersistentFlags().StringVar(&path, "jsonPath", "", "path on host to status json")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.enonicstatus.yaml)")
+	RootCmd.PersistentFlags().StringVar(&hosts, "hosts", "", "enonic nodes to check")
+	RootCmd.PersistentFlags().StringVar(&path, "jsonPath", "/status", "path on host to status json")
 
-  // Cobra also supports local flags, which will only run
+	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

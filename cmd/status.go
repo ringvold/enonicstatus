@@ -21,57 +21,120 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-  // "encoding/json"
+	"strings"
+	"net/http"
+	"net/url"
+	"io/ioutil"
+	"time"
+
 	"github.com/spf13/cobra"
-  "github.com/spf13/viper"
-  "strings"
+	"github.com/spf13/viper"
+	"github.com/wsxiaoys/terminal/color"
+
+	"github.com/haraldringvold/enonicstatus/jsonstruct"
 )
+
+var printLinePrefix string = "# "
 
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Shows status for configured nodes",
-	Long: `Extracts and diplays index status, uptime and master status for earch node`,
+	Long:  `Extracts and diplays index status, uptime and master status for earch node`,
 	Run: func(cmd *cobra.Command, args []string) {
-    hostSlice := strings.Split(viper.GetString("hosts"), ",")
-    for _,host := range hostSlice {
-      fmt.Println("host:", host)
+		path := viper.GetString("jsonPath")
+		fmt.Println("Path: ", path)
 
-    }
-    fmt.Println("path: ",viper.GetString("jsonPath"))
+		hosts := getHosts()
+		for _, host := range hosts {
+			printStatusForHost(host, path)
+		}
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(statusCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// statusCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// statusCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 }
 
-// func getJson(url string) map[string]interface {
-//   resp, err := http.Get(url)
-//   if err != nil {
-//     panic(err)
-//   }
-//   defer resp.Body.Close()
+func printStatusForHost(host string, path string) {
+	rawUrl := "http://"+host+"/"+path
+	hostUrl, err := url.Parse(rawUrl)
+	if err != nil {
+		panic(err)
+	}
 
-//   var json map[string]interface{}
+	json := getJson(hostUrl)
 
-//   if err := json.Unmarshal(resp, &json); err != nil {
-//       panic(err)
-//   }
-//   return json
-// }
+	fmt.Println("")
+	fmt.Println("Getting status for host:", host)
+	fmt.Println("######")
+	printName(json.Cluster.LocalNode.HostName)
+	printIndexStatus(json.Index.Status)
+	printMaster(json.Cluster.LocalNode.Master)
+	printNodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen)
+	printUptime(json.Jvm.UpTime)
+	fmt.Println("######")
+}
 
+func printName(name string) {
+	fmt.Println(printLinePrefix+"Name:", name)
+}
+func printIndexStatus(status string) {
+	formatting := ""
+	if status == "GREEN" {
+		formatting = "@g"
+	}
+	if status == "YELLOW" {
+		formatting = "@y"
+	}
+	if status == "RED" {
+		formatting = "@r"
+	}
+	color.Println(printLinePrefix+"Index:", formatting, status)
+}
 
+func printMaster(master string) {
+	formatting := ""
+	if master == "true" {
+		formatting = "@g"
+	}
+	color.Println(printLinePrefix+"Master:", formatting, master)
+}
 
+func printUptime(uptime float64) {
+	duration := fmt.Sprintf("%ims", uptime)
+	formattedUptime, _ := time.ParseDuration(duration)
+	formatting := "@b"
+	color.Println(printLinePrefix+"Uptime:", formatting, formattedUptime)
+}
+
+func printNodesSeen(nodesSeen float64) {
+	fmt.Println(printLinePrefix+"Nodes seen:", nodesSeen)
+}
+
+func getHosts() []string {
+	return strings.Split(viper.GetString("hosts"), ",")
+}
+
+func getJson(url *url.URL) jsonstruct.Status {
+	resp, err := http.Get(url.String())
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, err2 := ioutil.ReadAll(resp.Body)
+	if err2 != nil {
+		panic(err)
+	}
+
+	var statusJson jsonstruct.Status
+
+	if err := json.Unmarshal(body, &statusJson); err != nil {
+		panic(err)
+	}
+
+	return statusJson
+}
