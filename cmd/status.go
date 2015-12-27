@@ -28,6 +28,7 @@ import (
 	"net/url"
 	"io/ioutil"
 	"time"
+	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -104,7 +105,8 @@ func printMaster(master string) {
 }
 
 func printUptime(uptime float64) {
-	duration := fmt.Sprintf("%ims", uptime)
+	uptimeString := strconv.FormatFloat(uptime, 'f', -1, 64)
+	duration := fmt.Sprintf("%sms", uptimeString)
 	formattedUptime, _ := time.ParseDuration(duration)
 	formatting := "@b"
 	color.Println(printLinePrefix+"Uptime:", formatting, formattedUptime)
