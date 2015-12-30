@@ -1,2 +1,3 @@
-jsonPath: "enoniccms4.7.json"
+# cms:
+jsonPath: "/enoniccms4.7.json"
 hosts: "localhost:2015,localhost:2015"

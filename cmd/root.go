@@ -29,22 +29,22 @@ import (
 )
 
 var cfgFile string
-var hosts string
-var path string
 
 // This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "enonicstatus",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Displays information about an Enonic CMS cluster",
+	Long: `A commandline application that displays various information
+about an Enonic cluster.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+enonicstatus gets the information from the status json that shows
+information about the cluster and the current node.
+
+Currently supports Enonic CMS with plans for Enonic XP.`,
+
 // Uncomment the following line if your bare application
 // has an action associated with it:
-//	Run: func(cmd *cobra.Command, args []string) { },
+// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -59,14 +59,12 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports Persistent Flags, which, if defined here,
-	// will be global for your application.
-
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.enonicstatus.yaml)")
-	RootCmd.PersistentFlags().StringVar(&hosts, "hosts", "", "enonic nodes to check")
-	RootCmd.PersistentFlags().StringVar(&path, "jsonPath", "/status", "path on host to status json")
 
+	RootCmd.PersistentFlags().String("hosts", "", "enonic nodes to check")
+	RootCmd.PersistentFlags().String("json_path", "/status", "path on host to status json")
+	viper.BindPFlag(hostsViperPath, RootCmd.PersistentFlags().Lookup("hosts"))
+	viper.BindPFlag(jsonPathViperPath, RootCmd.PersistentFlags().Lookup("json_path"))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

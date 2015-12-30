@@ -37,39 +37,55 @@ import (
 	"github.com/haraldringvold/enonicstatus/jsonstruct"
 )
 
+var hostsFlag string
+var pathFlag string
 var printLinePrefix string = "# "
 
-// statusCmd represents the status command
-var statusCmd = &cobra.Command{
-	Use:   "status",
-	Short: "Shows status for configured nodes",
+const hostsViperPath = "hosts"
+const jsonPathViperPath = "jsonPath"
+
+// cmsCmd represents the status command
+var CmsCmd = &cobra.Command{
+	Use:   "cms",
+	Short: "Shows status Enonic CMS nodes",
 	Long:  `Extracts and diplays index status, uptime and master status for earch node`,
 	Run: func(cmd *cobra.Command, args []string) {
 		path := viper.GetString("jsonPath")
 		fmt.Println("Path: ", path)
+		fmt.Println("Hosts: ", viper.GetString("hosts"))
+
+		c := make(chan jsonstruct.Status)
 
 		hosts := getHosts()
 		for _, host := range hosts {
-			printStatusForHost(host, path)
+			rawUrl := "http://"+host+"/"+path
+			hostUrl, err := url.Parse(rawUrl)
+			if err != nil {
+				panic(err)
+			}
+			go func() {c <- getJson(hostUrl) }()
 		}
+
+		for i := 0; i < len(hosts); i++ {
+			select {
+        case json := <-c:
+					printStatus(json)
+        }
+		}
+
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(statusCmd)
+	RootCmd.AddCommand(CmsCmd)
 }
 
 func printStatusForHost(host string, path string) {
-	rawUrl := "http://"+host+"/"+path
-	hostUrl, err := url.Parse(rawUrl)
-	if err != nil {
-		panic(err)
-	}
 
-	json := getJson(hostUrl)
+}
 
+func printStatus(json jsonstruct.Status) {
 	fmt.Println("")
-	fmt.Println("Getting status for host:", host)
 	fmt.Println("######")
 	printName(json.Cluster.LocalNode.HostName)
 	printIndexStatus(json.Index.Status)
@@ -82,6 +98,7 @@ func printStatusForHost(host string, path string) {
 func printName(name string) {
 	fmt.Println(printLinePrefix+"Name:", name)
 }
+
 func printIndexStatus(status string) {
 	formatting := ""
 	if status == "GREEN" {
@@ -117,6 +134,7 @@ func printNodesSeen(nodesSeen float64) {
 }
 
 func getHosts() []string {
+	// TODO: Throw error when no hosts found
 	return strings.Split(viper.GetString("hosts"), ",")
 }
 
@@ -137,6 +155,5 @@ func getJson(url *url.URL) jsonstruct.Status {
 	if err := json.Unmarshal(body, &statusJson); err != nil {
 		panic(err)
 	}
-
 	return statusJson
 }
