@@ -1,0 +1,97 @@
+{
+  "cluster": {
+    "clusterName": "loadtest-cluster",
+    "localNode": {
+      "id": "2tLuZiq-SFix7fPPlpgd3g",
+      "hostName": "loadtest-appserver1",
+      "master": "true",
+      "numberOfNodesSeen": 5
+    },
+    "members": {
+      "wu13yY45QBKdu0Ggq1RMJw": {
+        "name": "10.0.6.82",
+        "id": "wu13yY45QBKdu0Ggq1RMJw",
+        "address": "inet[/192.168.4.5:9300]",
+        "version": "0.90.5",
+        "master": "false"
+      },
+      "VigLwoSvTuKl-LF51KVghw": {
+        "name": "loadtest-appserver4",
+        "id": "VigLwoSvTuKl-LF51KVghw",
+        "address": "inet[/192.168.4.4:9300]",
+        "version": "0.90.5",
+        "master": "false"
+      },
+      "DKzIAQZPTOeMq47l0OL-5g": {
+        "name": "loadtest-appserver3",
+        "id": "DKzIAQZPTOeMq47l0OL-5g",
+        "address": "inet[/192.168.4.3:9300]",
+        "version": "0.90.5",
+        "master": "false"
+      },
+      "SS9qzT-sRuSGYoamnJ5AIw": {
+        "name": "loadtest-appserver2",
+        "id": "SS9qzT-sRuSGYoamnJ5AIw",
+        "address": "inet[/192.168.4.2:9300]",
+        "version": "0.90.5",
+        "master": "false"
+      },
+      "2tLuZiq-SFix7fPPlpgd3g": {
+        "name": "loadtest-appserver1",
+        "id": "2tLuZiq-SFix7fPPlpgd3g",
+        "address": "inet[/192.168.4.1:9300]",
+        "version": "0.90.5",
+        "master": "true"
+      }
+    }
+  },
+  "os": {
+    "name": "Linux",
+    "version": "3.2.0-34-generic",
+    "arch": "amd64",
+    "cores": 8,
+    "loadAverage": 0.01
+  },
+  "jvm": {
+    "name": "Java HotSpot(TM) 64-Bit Server VM",
+    "vendor": "Oracle Corporation",
+    "version": "24.0-b56",
+    "startTime": 1380721284659,
+    "upTime": 331855
+  },
+  "memory": {
+    "heap": {
+      "init": 6442450944,
+      "max": 6313607168,
+      "committed": 6313607168,
+      "used": 660364184
+    },
+    "nonHeap": {
+      "init": 24313856,
+      "max": 318767104,
+      "committed": 81133568,
+      "used": 79803104
+    }
+  },
+  "gc": {
+    "collectionTime": 231,
+    "collectionCount": 2
+  },
+  "index": {
+    "status": "GREEN",
+    "activeShards": 16,
+    "activePrimaryShards": 4,
+    "activeReplicas": 12,
+    "unassignedShards": 0,
+    "relocatingShards": 0,
+    "initializingShards": 0,
+    "documents": "0",
+    "primaryShardsStoreSize": "336b",
+    "totalStoreSize": "1.2kb"
+  },
+  "product": {
+    "name": "Enonic CMS",
+    "version": "4.7.13",
+    "edition": "enterprise"
+  }
+}
