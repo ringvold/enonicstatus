@@ -37,7 +37,7 @@ var RootCmd = &cobra.Command{
 	Long: `A commandline application that displays various information
 about an Enonic cluster.
 
-enonicstatus gets the information from the status json that shows
+Enonicstatus gets the information from the status json that shows
 information about the cluster and the current node.
 
 Currently supports Enonic CMS with plans for Enonic XP.`,

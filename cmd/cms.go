@@ -29,6 +29,7 @@ import (
 	"io/ioutil"
 	"time"
 	"strconv"
+	"errors"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -49,7 +50,7 @@ var CmsCmd = &cobra.Command{
 	Use:   "cms",
 	Short: "Shows status Enonic CMS nodes",
 	Long:  `Extracts and diplays index status, uptime and master status for earch node`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		path := viper.GetString("jsonPath")
 		fmt.Println("Path: ", path)
 		fmt.Println("Hosts: ", viper.GetString("hosts"))
@@ -57,6 +58,10 @@ var CmsCmd = &cobra.Command{
 		c := make(chan jsonstruct.Status)
 
 		hosts := getHosts()
+		if hostsIsEpmty(hosts) {
+			return errors.New("No hosts configured")
+		}
+
 		for _, host := range hosts {
 			rawUrl := "http://"+host+"/"+path
 			hostUrl, err := url.Parse(rawUrl)
@@ -72,16 +77,12 @@ var CmsCmd = &cobra.Command{
 					printStatus(json)
         }
 		}
-
+		return nil
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(CmsCmd)
-}
-
-func printStatusForHost(host string, path string) {
-
 }
 
 func printStatus(json jsonstruct.Status) {
@@ -134,8 +135,17 @@ func printNodesSeen(nodesSeen float64) {
 }
 
 func getHosts() []string {
-	// TODO: Throw error when no hosts found
 	return strings.Split(viper.GetString("hosts"), ",")
+}
+
+func hostsIsEpmty(hosts []string) bool {
+	if len(hosts) < 0 {
+		return true
+	}
+	if len(hosts) == 1 && hosts[0] == "" {
+		return true
+	}
+	return false
 }
 
 func getJson(url *url.URL) jsonstruct.Status {
