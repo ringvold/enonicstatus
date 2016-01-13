@@ -23,12 +23,15 @@ package cmd
 import (
 	"fmt"
 	"os"
+	// "runtime/debug"
+	// "errors"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var debugEnabled bool
 
 // This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -37,7 +40,7 @@ var RootCmd = &cobra.Command{
 	Long: `A commandline application that displays various information
 about an Enonic cluster.
 
-enonicstatus gets the information from the status json that shows
+Enonicstatus gets the information from the status json that shows
 information about the cluster and the current node.
 
 Currently supports Enonic CMS with plans for Enonic XP.`,
@@ -63,6 +66,7 @@ func init() {
 
 	RootCmd.PersistentFlags().String("hosts", "", "enonic nodes to check")
 	RootCmd.PersistentFlags().String("json_path", "/status", "path on host to status json")
+	RootCmd.PersistentFlags().BoolVar(&debugEnabled, "debug", false, "show more information on errors")
 	viper.BindPFlag(hostsViperPath, RootCmd.PersistentFlags().Lookup("hosts"))
 	viper.BindPFlag(jsonPathViperPath, RootCmd.PersistentFlags().Lookup("json_path"))
 	// Cobra also supports local flags, which will only run
