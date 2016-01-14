@@ -54,7 +54,7 @@ var CmsCmd = &cobra.Command{
 	Long:  `Extracts and diplays index status, uptime and master status for earch node`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		env := ""
-		if args != nil {
+		if len(args) != 0 {
 			env = args[0]
 		}
 
