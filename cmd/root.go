@@ -23,8 +23,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	// "runtime/debug"
-	// "errors"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -34,6 +32,9 @@ var cfgFile string
 var hosts string
 var jsonPath string
 var debugEnabled bool
+var noProxy bool
+var httpProxy string
+var httpsProxy string
 
 const hostsFlag string = "hosts"
 const jsonPathFlag string = "jsonPath"
@@ -50,6 +51,14 @@ Enonicstatus gets the information from the status json that shows
 information about the cluster and the current node.
 
 Currently supports Enonic CMS with plans for Enonic XP.`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		Debug("Persisten pre")
+		removeProxy()
+	},
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		Debug("Persisten post")
+		restoreProxy()
+	},
 
 // Uncomment the following line if your bare application
 // has an action associated with it:
@@ -72,6 +81,9 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&hosts, hostsFlag, "", "enonic nodes to check")
 	RootCmd.PersistentFlags().StringVar(&jsonPath, jsonPathFlag, jsonPathFlagDefault, "path on host to status json")
 	RootCmd.PersistentFlags().BoolVar(&debugEnabled, "debug", false, "show more information on errors")
+	RootCmd.PersistentFlags().BoolVar(&noProxy, "noProxy", false, "do not use the system set proxy")
+
+	viper.BindPFlag("noProxy", RootCmd.Flags().Lookup("noProxy"))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -128,6 +140,28 @@ func GetPath(env string) string {
 		return value
 	}
 	return jsonPathFlagDefault
+}
+
+func removeProxy() {
+	if noProxy {
+		httpProxy = os.Getenv("http_proxy")
+		httpsProxy = os.Getenv("https_proxy")
+		Debugf("Removing http_proxy: %v", httpProxy)
+		os.Setenv("http_proxy", "")
+		Debugf("Removing https_proxy: %v", httpsProxy)
+		os.Setenv("https_proxy", "")
+	}
+}
+
+func restoreProxy() {
+	if httpProxy != "" {
+		Debugf("Restoring http_proxy: %v", httpProxy)
+		os.Setenv("http_proxy", httpProxy)
+	}
+	if httpsProxy != "" {
+		Debugf("Restoring https_proxy: %v", httpsProxy)
+		os.Setenv("https_proxy", httpsProxy)
+	}
 }
 
 func Debug(a ...interface{}) {
