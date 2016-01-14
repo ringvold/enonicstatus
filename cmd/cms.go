@@ -107,6 +107,7 @@ func printStatus(json jsonstruct.Status) {
 	printMaster(json.Cluster.LocalNode.Master)
 	printNodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen)
 	printUptime(json.Jvm.UpTime)
+	printVersion(json.Product.Version)
 	fmt.Println("######")
 }
 
@@ -146,6 +147,10 @@ func printUptime(uptime float64) {
 
 func printNodesSeen(nodesSeen float64) {
 	fmt.Println(printLinePrefix+"Nodes seen:", nodesSeen)
+}
+
+func printVersion(version string) {
+	fmt.Println(printLinePrefix+"Version:", version)
 }
 
 func hostsIsEpmty(hosts []string) bool {
