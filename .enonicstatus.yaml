@@ -1,3 +1,6 @@
 # cms:
 jsonPath: "/enoniccms4.7.json"
 hosts: "localhost:2015,localhost:2015"
+utv:
+  hosts: "utv.localhost:2016"
+  jsonPath: "/utvpath"

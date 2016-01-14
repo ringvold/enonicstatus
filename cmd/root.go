@@ -31,7 +31,13 @@ import (
 )
 
 var cfgFile string
+var hosts string
+var jsonPath string
 var debugEnabled bool
+
+const hostsFlag string = "hosts"
+const jsonPathFlag string = "jsonPath"
+const jsonPathFlagDefault string = "/status"
 
 // This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -63,12 +69,9 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.enonicstatus.yaml)")
-
-	RootCmd.PersistentFlags().String("hosts", "", "enonic nodes to check")
-	RootCmd.PersistentFlags().String("json_path", "/status", "path on host to status json")
+	RootCmd.PersistentFlags().StringVar(&hosts, hostsFlag, "", "enonic nodes to check")
+	RootCmd.PersistentFlags().StringVar(&jsonPath, jsonPathFlag, jsonPathFlagDefault, "path on host to status json")
 	RootCmd.PersistentFlags().BoolVar(&debugEnabled, "debug", false, "show more information on errors")
-	viper.BindPFlag(hostsViperPath, RootCmd.PersistentFlags().Lookup("hosts"))
-	viper.BindPFlag(jsonPathViperPath, RootCmd.PersistentFlags().Lookup("json_path"))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -81,12 +84,61 @@ func initConfig() {
 	}
 
 	viper.SetConfigName(".enonicstatus") // name of config file (without extension)
-  viper.AddConfigPath("$HOME")  // adding home directory as first search path
-	viper.AddConfigPath(".") // current directory
+	viper.AddConfigPath(".") // adding current directory as first search path
+  viper.AddConfigPath("$HOME")  //  home directory
 	viper.AutomaticEnv()          // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+}
+
+func GetHosts(env string) string {
+	key := hostsFlag
+	if env != "" {
+		key = env+"."+hostsFlag
+	}
+	Debug("Hosts key: "+ key)
+	if hosts != "" {
+		Debug("Hosts: use flag")
+		return hosts
+	}
+	if viper.IsSet(key) {
+		value := viper.GetString(key)
+		Debugf("Hosts: use viper: %q", value)
+		return value
+	}
+	return ""
+}
+
+func GetPath(env string) string {
+	key := jsonPathFlag
+	if env != "" {
+		key = env+"."+jsonPathFlag
+	}
+	Debug("Path key: "+ key)
+	if jsonPath != jsonPathFlagDefault {
+		Debug("Path: use flag: "+ jsonPath)
+		return jsonPath
+	}
+	if viper.IsSet(key) {
+		value := viper.GetString(key)
+		Debugf("Path: use viper: %q", value)
+		return value
+	}
+	return jsonPathFlagDefault
+}
+
+func Debug(a ...interface{}) {
+	if debugEnabled {
+		fmt.Println(a)
+	}
+}
+
+func Debugf(format string, a ...interface{}) {
+	if debugEnabled {
+		fmt.Printf(format, a)
+		fmt.Printf("\n")
 	}
 }

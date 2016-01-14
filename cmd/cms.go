@@ -32,7 +32,6 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/wsxiaoys/terminal/color"
 
 	"github.com/haraldringvold/enonicstatus/jsonstruct"
@@ -43,8 +42,6 @@ type GetJsonResult struct {
 	error error
 }
 
-var hostsFlag string
-var pathFlag string
 var printLinePrefix string = "# "
 
 const hostsViperPath = "hosts"
@@ -56,20 +53,26 @@ var CmsCmd = &cobra.Command{
 	Short: "Shows status Enonic CMS nodes",
 	Long:  `Extracts and diplays index status, uptime and master status for earch node`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		env := ""
+		if args != nil {
+			env = args[0]
+		}
 
-		path := viper.GetString("jsonPath")
-		fmt.Println("Path: ", path)
-		fmt.Println("Hosts: ", viper.GetString("hosts"))
+		path := GetPath(env)
+		hosts := GetHosts(env)
+
+		Debug("Path: ", path)
+		Debug("Hosts: ", hosts)
 
 		c := make(chan GetJsonResult)
 
-		hosts := getHosts()
-		if hostsIsEpmty(hosts) {
+		hostsSlice := strings.Split(hosts, ",")
+		if hostsIsEpmty(hostsSlice) {
 			return errors.New("No hosts configured")
 		}
 
-		for _, host := range hosts {
-			rawUrl := "http://"+host+path
+		for _, host := range hostsSlice {
+			rawUrl := fmt.Sprintf("http://%v",host+path)
 			hostUrl, err := url.Parse(rawUrl)
 			if err != nil {
 				panic(err)
@@ -77,7 +80,7 @@ var CmsCmd = &cobra.Command{
 			go func() {c <- getJson(*hostUrl) }()
 		}
 
-		for i := 0; i < len(hosts); i++ {
+		for i := 0; i < len(hostsSlice); i++ {
 			select {
         case result := <-c:
 					if result.error != nil {
@@ -145,10 +148,6 @@ func printNodesSeen(nodesSeen float64) {
 	fmt.Println(printLinePrefix+"Nodes seen:", nodesSeen)
 }
 
-func getHosts() []string {
-	return strings.Split(viper.GetString("hosts"), ",")
-}
-
 func hostsIsEpmty(hosts []string) bool {
 	if len(hosts) < 0 {
 		return true
@@ -164,8 +163,8 @@ func getJson(url url.URL) GetJsonResult {
 
 	resp, err := http.Get(url.String())
 	if err != nil {
-		// TODO: Add debug statements
-		res.error = errors.New(fmt.Sprint("Error: Could not connect to host ", &url))
+		// TODO: Add debug statements?
+		res.error = errors.New(fmt.Sprintf("Error: Could not connect to host %q. Is it correct?", &url))
 		return *res
 	}
 	defer resp.Body.Close()
@@ -179,7 +178,7 @@ func getJson(url url.URL) GetJsonResult {
 
 	if err := json.Unmarshal(body, &statusJson); err != nil {
 		// TODO: Add debug statements
-		res.error = errors.New(fmt.Sprint("Cannot unmarshal json from host ", &url))
+		res.error = errors.New(fmt.Sprintf("Cannot unmarshal json from host %q. Is it returning correct JSON?", &url))
 	}
 	res.json = statusJson
 	return *res
