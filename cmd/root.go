@@ -32,13 +32,13 @@ var cfgFile string
 var hosts string
 var jsonPath string
 var debugEnabled bool
-var noProxy bool
 var httpProxy string
 var httpsProxy string
 
 const hostsFlag string = "hosts"
 const jsonPathFlag string = "jsonPath"
 const jsonPathFlagDefault string = "/status"
+const noProxyFlag string = "noProxy"
 
 // This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -81,9 +81,9 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&hosts, hostsFlag, "", "enonic nodes to check")
 	RootCmd.PersistentFlags().StringVar(&jsonPath, jsonPathFlag, jsonPathFlagDefault, "path on host to status json")
 	RootCmd.PersistentFlags().BoolVar(&debugEnabled, "debug", false, "show more information on errors")
-	RootCmd.PersistentFlags().BoolVar(&noProxy, "noProxy", false, "do not use the system set proxy")
+	RootCmd.PersistentFlags().Bool(noProxyFlag, false, "do not use the system set proxy")
 
-	viper.BindPFlag("noProxy", RootCmd.Flags().Lookup("noProxy"))
+	viper.BindPFlag(noProxyFlag, RootCmd.PersistentFlags().Lookup(noProxyFlag))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -143,7 +143,7 @@ func GetPath(env string) string {
 }
 
 func removeProxy() {
-	if noProxy {
+	if viper.GetBool(noProxyFlag) {
 		httpProxy = os.Getenv("http_proxy")
 		httpsProxy = os.Getenv("https_proxy")
 		Debugf("Removing http_proxy: %v", httpProxy)
