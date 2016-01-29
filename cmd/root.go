@@ -44,8 +44,7 @@ const noProxyFlag string = "noProxy"
 var RootCmd = &cobra.Command{
 	Use:   "enonicstatus",
 	Short: "Displays information about an Enonic CMS cluster",
-	Long: `A commandline application that displays various information
-about an Enonic cluster.
+	Long: `Enonicstatus displays various information about an Enonic cluster.
 
 Enonicstatus gets the information from the status json that shows
 information about the cluster and the current node.

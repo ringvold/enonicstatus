@@ -38,7 +38,7 @@ import (
 )
 
 type GetJsonResult struct {
-	json jsonstruct.Status
+	json jsonstruct.CmsStatus
 	error error
 }
 
@@ -99,9 +99,10 @@ func init() {
 	RootCmd.AddCommand(CmsCmd)
 }
 
-func printStatus(json jsonstruct.Status) {
+func printStatus(json jsonstruct.CmsStatus) {
 	fmt.Println("")
 	fmt.Println("######")
+	fmt.Println(json)
 	printName(json.Cluster.LocalNode.HostName)
 	printIndexStatus(json.Index.Status)
 	printMaster(json.Cluster.LocalNode.Master)
@@ -168,8 +169,11 @@ func getJson(url url.URL) GetJsonResult {
 
 	resp, err := http.Get(url.String())
 	if err != nil {
-		// TODO: Add debug statements?
-		res.error = errors.New(fmt.Sprintf("Error: Could not connect to host %q. Is it correct?", &url))
+		if debugEnabled {
+			res.error = errors.New(fmt.Sprintf("Error: %v", err.Error()))
+		} else {
+			res.error = errors.New(fmt.Sprintf("Error: Could not connect to host %q. Is it correct?", &url))
+		}
 		return *res
 	}
 	defer resp.Body.Close()
@@ -179,11 +183,14 @@ func getJson(url url.URL) GetJsonResult {
 		panic(err)
 	}
 
-	var statusJson jsonstruct.Status
+	var statusJson jsonstruct.CmsStatus
 
 	if err := json.Unmarshal(body, &statusJson); err != nil {
-		// TODO: Add debug statements
-		res.error = errors.New(fmt.Sprintf("Cannot unmarshal json from host %q. Is it returning correct JSON?", &url))
+		if debugEnabled {
+			res.error = errors.New(fmt.Sprintf("Error: %v", err.Error()))
+		} else {
+			res.error = errors.New(fmt.Sprintf("Cannot unmarshal json from host %q. Is it returning correct JSON?", &url))
+		}
 	}
 	res.json = statusJson
 	return *res
