@@ -26,6 +26,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/wsxiaoys/terminal/color"
+
 )
 
 var cfgFile string
@@ -34,11 +36,13 @@ var jsonPath string
 var debugEnabled bool
 var httpProxy string
 var httpsProxy string
+var noFormating bool
 
 const hostsFlag string = "hosts"
 const jsonPathFlag string = "jsonPath"
 const jsonPathFlagDefault string = "/status"
 const noProxyFlag string = "noProxy"
+const noFormatingFlag string = "noFormating"
 
 // This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -81,9 +85,12 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&hosts, hostsFlag, "", "enonic nodes to check")
 	RootCmd.PersistentFlags().StringVar(&jsonPath, jsonPathFlag, jsonPathFlagDefault, "path on host to status json")
 	RootCmd.PersistentFlags().BoolVar(&debugEnabled, "debug", false, "show more information on errors")
+
 	RootCmd.PersistentFlags().Bool(noProxyFlag, false, "do not use the system set proxy")
+	RootCmd.PersistentFlags().Bool(noFormatingFlag, false, "do not add color formating for terminal")
 
 	viper.BindPFlag(noProxyFlag, RootCmd.PersistentFlags().Lookup(noProxyFlag))
+	viper.BindPFlag(noFormatingFlag, RootCmd.PersistentFlags().Lookup(noFormatingFlag))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -102,7 +109,7 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		Debug("Using config file:", viper.ConfigFileUsed())
 	}
 }
 
@@ -140,6 +147,13 @@ func GetPath(env string) string {
 		return value
 	}
 	return jsonPathFlagDefault
+}
+
+func Println(a ...interface{}) (int, error) {
+	if viper.GetBool(noFormatingFlag) {
+		a = append(a[:1], a[2:]...)
+	}
+	return color.Println(a...)
 }
 
 func removeProxy() {

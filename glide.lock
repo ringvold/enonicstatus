@@ -1,5 +1,5 @@
 hash: 0d85b78c205a5a5b4a52c4521bf9fdfcfa797fa54a6186496b6a972c5fc79d00
-updated: 2016-01-12T21:17:52.609571623+01:00
+updated: 2016-02-02T00:10:33.014591222+01:00
 imports:
 - name: github.com/armon/consul-api
   version: dcfedd50ed5334f96adee43fc88518a4f095e15c
@@ -10,7 +10,7 @@ imports:
 - name: github.com/cpuguy83/go-md2man
   version: 2724a9c9051aa62e9cca11304e7dd518e9e41599
 - name: github.com/hashicorp/hcl
-  version: 197e8d3cf42199cfd53cd775deb37f3637234635
+  version: e96d23138c76470c808bf6586bdaf981bbd25cae
 - name: github.com/kr/pretty
   version: e6ac2fc51e89a3249e82157fa0bb7a18ef9dd5bb
 - name: github.com/kr/pty
@@ -22,13 +22,13 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: 281073eb9eb092240d33ef253c404f1cca550309
 - name: github.com/russross/blackfriday
-  version: c8875c0ed47e07b063c3628e2e4d4c9826721795
+  version: 006144af03eeeff1037240a71865a9fd61f1c25f
 - name: github.com/shurcooL/sanitized_anchor_name
   version: 10ef21a441db47d8b13ebcc5fd2310f636973c77
 - name: github.com/spf13/cast
   version: ee7b3e0353166ab1f3a605294ac8cd2b77953778
 - name: github.com/spf13/cobra
-  version: 97f831a4fd01378ad85840fed4f43824bc3dd102
+  version: 8e91712f174ced10270cf66615e0a9127e7c4de5
 - name: github.com/spf13/jwalterweatherman
   version: d00654080cddbd2b082acaa74007cb94a2b40866
 - name: github.com/spf13/pflag
@@ -44,9 +44,9 @@ imports:
 - name: github.com/xordataexchange/crypt
   version: 749e360c8f236773f28fc6d3ddfce4a470795227
 - name: golang.org/x/crypto
-  version: d67eb63455fa4d6fca5802332d86f1f204017e00
+  version: 1f22c0103821b9390939b6776727195525381532
 - name: gopkg.in/fsnotify.v1
-  version: 508915b7500b6e42a87132e4afeb4729cebc7cbb
+  version: 8611c35ab31c1c28aa903d33cf8b6e44a399b09e
 - name: gopkg.in/yaml.v2
   version: f7716cbe52baa25d2e9b0d0da546fcf909fc16b4
 devImports: []

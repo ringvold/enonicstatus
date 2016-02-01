@@ -32,7 +32,6 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
-	"github.com/wsxiaoys/terminal/color"
 
 	"github.com/haraldringvold/enonicstatus/jsonstruct"
 )
@@ -126,7 +125,7 @@ func printIndexStatus(status string) {
 	if status == "RED" {
 		formatting = "@r"
 	}
-	color.Println(printLinePrefix+"Index:", formatting, status)
+	Println(printLinePrefix+"Index:", formatting, status)
 }
 
 func printMaster(master string) {
@@ -134,7 +133,7 @@ func printMaster(master string) {
 	if master == "true" {
 		formatting = "@g"
 	}
-	color.Println(printLinePrefix+"Master:", formatting, master)
+	Println(printLinePrefix+"Master:", formatting, master)
 }
 
 func printUptime(uptime float64) {
@@ -142,7 +141,7 @@ func printUptime(uptime float64) {
 	duration := fmt.Sprintf("%sms", uptimeString)
 	formattedUptime, _ := time.ParseDuration(duration)
 	formatting := "@b"
-	color.Println(printLinePrefix+"Uptime:", formatting, formattedUptime)
+	Println(printLinePrefix+"Uptime:", formatting, formattedUptime)
 }
 
 func printNodesSeen(nodesSeen float64) {

@@ -34,7 +34,7 @@ func TestGetPath(t *testing.T) {
 	got := GetPath("")
 	want := "/status"
 	if got != want {
-		t.Error("GetPath() == %q, want %q", got, want)
+		t.Errorf("GetPath() == %q, want %q", got, want)
 	}
 	initViper()
 
