@@ -5,3 +5,4 @@ import:
 - package: github.com/wsxiaoys/terminal
   subpackages:
   - /color
+- package: github.com/kardianos/osext

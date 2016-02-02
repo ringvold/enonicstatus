@@ -1,5 +1,5 @@
-hash: 0d85b78c205a5a5b4a52c4521bf9fdfcfa797fa54a6186496b6a972c5fc79d00
-updated: 2016-01-12T21:17:52.609571623+01:00
+hash: 55811ec57fbd0ac926faf9b9fc1f8cd8635cbcc6f894bcd69a9c750e96ca073c
+updated: 2016-02-02T23:18:11.68848114+01:00
 imports:
 - name: github.com/armon/consul-api
   version: dcfedd50ed5334f96adee43fc88518a4f095e15c
@@ -11,6 +11,8 @@ imports:
   version: 2724a9c9051aa62e9cca11304e7dd518e9e41599
 - name: github.com/hashicorp/hcl
   version: 197e8d3cf42199cfd53cd775deb37f3637234635
+- name: github.com/kardianos/osext
+  version: 29ae4ffbc9a6fe9fb2bc5029050ce6996ea1d3bc
 - name: github.com/kr/pretty
   version: e6ac2fc51e89a3249e82157fa0bb7a18ef9dd5bb
 - name: github.com/kr/pty
