@@ -27,7 +27,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/wsxiaoys/terminal/color"
-
 )
 
 var cfgFile string
@@ -36,13 +35,13 @@ var jsonPath string
 var debugEnabled bool
 var httpProxy string
 var httpsProxy string
-var noFormating bool
+var noColor bool
 
 const hostsFlag string = "hosts"
 const jsonPathFlag string = "jsonPath"
 const jsonPathFlagDefault string = "/status"
 const noProxyFlag string = "noProxy"
-const noFormatingFlag string = "noFormating"
+const noColorFlag string = "noColor"
 
 // This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -64,9 +63,9 @@ Currently supports Enonic CMS with plans for Enonic XP.`,
 		restoreProxy()
 	},
 
-// Uncomment the following line if your bare application
-// has an action associated with it:
-// Run: func(cmd *cobra.Command, args []string) { },
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -87,10 +86,10 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&debugEnabled, "debug", false, "show more information on errors")
 
 	RootCmd.PersistentFlags().Bool(noProxyFlag, false, "do not use the system set proxy")
-	RootCmd.PersistentFlags().Bool(noFormatingFlag, false, "do not add color formating for terminal")
+	RootCmd.PersistentFlags().Bool(noColorFlag, false, "do not add color formating for terminal")
 
 	viper.BindPFlag(noProxyFlag, RootCmd.PersistentFlags().Lookup(noProxyFlag))
-	viper.BindPFlag(noFormatingFlag, RootCmd.PersistentFlags().Lookup(noFormatingFlag))
+	viper.BindPFlag(noColorFlag, RootCmd.PersistentFlags().Lookup(noColorFlag))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -103,9 +102,9 @@ func initConfig() {
 	}
 
 	viper.SetConfigName(".enonicstatus") // name of config file (without extension)
-	viper.AddConfigPath(".") // adding current directory as first search path
-  viper.AddConfigPath("$HOME")  //  home directory
-	viper.AutomaticEnv()          // read in environment variables that match
+	viper.AddConfigPath(".")             // adding current directory as first search path
+	viper.AddConfigPath("$HOME")         //  home directory
+	viper.AutomaticEnv()                 // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
@@ -116,9 +115,9 @@ func initConfig() {
 func GetHosts(env string) string {
 	key := hostsFlag
 	if env != "" {
-		key = env+"."+hostsFlag
+		key = env + "." + hostsFlag
 	}
-	Debug("Hosts key: "+ key)
+	Debug("Hosts key: " + key)
 	if hosts != "" {
 		Debug("Hosts: use flag")
 		return hosts
@@ -134,11 +133,11 @@ func GetHosts(env string) string {
 func GetPath(env string) string {
 	key := jsonPathFlag
 	if env != "" {
-		key = env+"."+jsonPathFlag
+		key = env + "." + jsonPathFlag
 	}
-	Debug("Path key: "+ key)
+	Debug("Path key: " + key)
 	if jsonPath != jsonPathFlagDefault {
-		Debug("Path: use flag: "+ jsonPath)
+		Debug("Path: use flag: " + jsonPath)
 		return jsonPath
 	}
 	if viper.IsSet(key) {
@@ -150,7 +149,7 @@ func GetPath(env string) string {
 }
 
 func Println(a ...interface{}) (int, error) {
-	if viper.GetBool(noFormatingFlag) {
+	if viper.GetBool(noColorFlag) {
 		a = append(a[:1], a[2:]...)
 	}
 	return color.Println(a...)

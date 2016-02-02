@@ -18,9 +18,9 @@ func initViper() {
 	}
 
 	viper.SetConfigName(".enonicstatus") // name of config file (without extension)
-	viper.AddConfigPath("..") // adding current directory as first search path
-  viper.AddConfigPath("$HOME")  //  home directory
-	viper.AutomaticEnv()          // read in environment variables that match
+	viper.AddConfigPath("..")            // adding current directory as first search path
+	viper.AddConfigPath("$HOME")         //  home directory
+	viper.AutomaticEnv()                 // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
@@ -50,7 +50,6 @@ func TestGetPath(t *testing.T) {
 		t.Error("Not using jsonPath flag")
 	}
 	jsonPath = "/status"
-
 
 	// Get host for spesified enviroment
 	env := "utv"
@@ -91,7 +90,7 @@ func TestGetHosts(t *testing.T) {
 	if got != hosts {
 		t.Errorf("GetHosts() == %q, want %q", got, hosts)
 	}
-	hosts=""
+	hosts = ""
 
 	// Get host for spesified enviroment
 	env := "utv"
