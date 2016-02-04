@@ -22,14 +22,14 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"strings"
+	"io/ioutil"
 	"net/http"
 	"net/url"
-	"io/ioutil"
-	"time"
 	"strconv"
-	"errors"
+	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/wsxiaoys/terminal/color"
@@ -38,7 +38,7 @@ import (
 )
 
 type GetJsonResult struct {
-	json jsonstruct.CmsStatus
+	json  jsonstruct.CmsStatus
 	error error
 }
 
@@ -72,24 +72,24 @@ var CmsCmd = &cobra.Command{
 		}
 
 		for _, host := range hostsSlice {
-			rawUrl := fmt.Sprintf("http://%v",host+path)
+			rawUrl := fmt.Sprintf("http://%v", host+path)
 			hostUrl, err := url.Parse(rawUrl)
 			if err != nil {
 				panic(err)
 			}
-			go func() {c <- getJson(*hostUrl) }()
+			go func() { c <- getJson(*hostUrl) }()
 		}
 
 		for i := 0; i < len(hostsSlice); i++ {
 			select {
-        case result := <-c:
-					if result.error != nil {
-						fmt.Println("")
-						fmt.Println(result.error.Error())
-					} else {
-						printStatus(result.json)
-					}
-        }
+			case result := <-c:
+				if result.error != nil {
+					fmt.Println("")
+					fmt.Println(result.error.Error())
+				} else {
+					printStatus(result.json)
+				}
+			}
 		}
 		return nil
 	},
