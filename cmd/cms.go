@@ -102,7 +102,6 @@ func init() {
 func printStatus(json jsonstruct.CmsStatus) {
 	fmt.Println("")
 	fmt.Println("######")
-	fmt.Println(json)
 	printName(json.Cluster.LocalNode.HostName)
 	printIndexStatus(json.Index.Status)
 	printMaster(json.Cluster.LocalNode.Master)

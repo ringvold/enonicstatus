@@ -22,9 +22,16 @@ type Jvm struct {
 	UpTime float64
 }
 
+type MemoryConsumption struct {
+	Init float64
+	Max float64
+	Committed float64
+	Used float64
+}
+
 type Memory struct {
-		Heap map[string]float64
-		NonHeap map[string]float64
+		Heap *MemoryConsumption
+		NonHeap *MemoryConsumption
 	}
 
 type Gc struct {
@@ -60,13 +67,15 @@ type Member struct {
 }
 
 type Cluster struct {
+	ClusterName string
 	LocalNode *LocalNode
-	Members *map[string]Member
 }
 
 type XpClusterStatus struct {
 	LocalNode *LocalNode
 	Members *map[string]Member
+	Name string
+	State string
 }
 
 type CmsStatus struct {
