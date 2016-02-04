@@ -9,7 +9,6 @@ type Status struct {
       Master string
       NumberOfNodesSeen float64
     }
-    Members map[string]interface{}
   }
   Os struct {
     Name string
