@@ -60,9 +60,9 @@ Currently supports Enonic CMS with plans for Enonic XP.`,
 		restoreProxy()
 	},
 
-// Uncomment the following line if your bare application
-// has an action associated with it:
-// Run: func(cmd *cobra.Command, args []string) { },
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -96,9 +96,9 @@ func initConfig() {
 	}
 
 	viper.SetConfigName(".enonicstatus") // name of config file (without extension)
-	viper.AddConfigPath(".") // adding current directory as first search path
-  viper.AddConfigPath("$HOME")  //  home directory
-	viper.AutomaticEnv()          // read in environment variables that match
+	viper.AddConfigPath(".")             // adding current directory as first search path
+	viper.AddConfigPath("$HOME")         //  home directory
+	viper.AutomaticEnv()                 // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
@@ -109,9 +109,9 @@ func initConfig() {
 func GetHosts(env string) string {
 	key := hostsFlag
 	if env != "" {
-		key = env+"."+hostsFlag
+		key = env + "." + hostsFlag
 	}
-	Debug("Hosts key: "+ key)
+	Debug("Hosts key: " + key)
 	if hosts != "" {
 		Debug("Hosts: use flag")
 		return hosts
@@ -127,11 +127,11 @@ func GetHosts(env string) string {
 func GetPath(env string) string {
 	key := jsonPathFlag
 	if env != "" {
-		key = env+"."+jsonPathFlag
+		key = env + "." + jsonPathFlag
 	}
-	Debug("Path key: "+ key)
+	Debug("Path key: " + key)
 	if jsonPath != jsonPathFlagDefault {
-		Debug("Path: use flag: "+ jsonPath)
+		Debug("Path: use flag: " + jsonPath)
 		return jsonPath
 	}
 	if viper.IsSet(key) {

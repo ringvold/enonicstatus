@@ -27,8 +27,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/kardianos/osext"
+	"github.com/spf13/cobra"
 )
 
 const VersionNumber = 0.1
@@ -43,7 +43,7 @@ var (
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the verson number",
-	Long: `Shows the version. Pretty simple.`,
+	Long:  `Shows the version. Pretty simple.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if BuildDate == "" {
 			setBuildDate() // set the build date from executable's mdate
