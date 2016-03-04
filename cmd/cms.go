@@ -42,7 +42,8 @@ type GetJsonResult struct {
 	error error
 }
 
-var printLinePrefix string = "# "
+var printLinePrefix string = "|- "
+var printLineHeaderPrefix string = "# "
 
 const hostsViperPath = "hosts"
 const jsonPathViperPath = "jsonPath"
@@ -101,14 +102,12 @@ func init() {
 
 func printStatus(json jsonstruct.Status) {
 	fmt.Println("")
-	fmt.Println("######")
-	printName(json.Cluster.LocalNode.HostName)
+	fmt.Println(printLineHeaderPrefix+json.Cluster.LocalNode.HostName)
 	printIndexStatus(json.Index.Status)
 	printMaster(json.Cluster.LocalNode.Master)
 	printNodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen)
 	printUptime(json.Jvm.UpTime)
 	printVersion(json.Product.Version)
-	fmt.Println("######")
 }
 
 func printName(name string) {

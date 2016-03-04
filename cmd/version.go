@@ -31,7 +31,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const VersionNumber = 0.1
+const VersionNumber = 0.2
 const VersionSuffix = "-DEV" // blank this when doing a releas
 
 var (
