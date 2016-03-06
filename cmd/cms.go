@@ -27,14 +27,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/wsxiaoys/terminal/color"
 
 	"github.com/haraldringvold/enonicstatus/jsonstruct"
+	"github.com/haraldringvold/enonicstatus/formatter"
 )
 
 type GetJsonResult struct {
@@ -101,55 +99,14 @@ func init() {
 }
 
 func printStatus(json jsonstruct.Status) {
+	formatter := new(formatter.TerminalFormatter)
 	fmt.Println("")
-	fmt.Println(printLineHeaderPrefix+json.Cluster.LocalNode.HostName)
-	printIndexStatus(json.Index.Status)
-	printMaster(json.Cluster.LocalNode.Master)
-	printNodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen)
-	printUptime(json.Jvm.UpTime)
-	printVersion(json.Product.Version)
-}
-
-func printName(name string) {
-	fmt.Println(printLinePrefix+"Name:", name)
-}
-
-func printIndexStatus(status string) {
-	formatting := ""
-	if status == "GREEN" {
-		formatting = "@g"
-	}
-	if status == "YELLOW" {
-		formatting = "@y"
-	}
-	if status == "RED" {
-		formatting = "@r"
-	}
-	color.Println(printLinePrefix+"Index:", formatting, status)
-}
-
-func printMaster(master string) {
-	formatting := ""
-	if master == "true" {
-		formatting = "@g"
-	}
-	color.Println(printLinePrefix+"Master:", formatting, master)
-}
-
-func printUptime(uptime float64) {
-	uptimeString := strconv.FormatFloat(uptime, 'f', -1, 64)
-	duration := fmt.Sprintf("%sms", uptimeString)
-	formattedUptime, _ := time.ParseDuration(duration)
-	formatting := "@b"
-	color.Println(printLinePrefix+"Uptime:", formatting, formattedUptime)
-}
-
-func printNodesSeen(nodesSeen float64) {
-	fmt.Println(printLinePrefix+"Nodes seen:", nodesSeen)
-}
-
-func printVersion(version string) {
-	fmt.Println(printLinePrefix+"Version:", version)
+	fmt.Println(formatter.HostName(json.Cluster.LocalNode.HostName))
+	fmt.Println(formatter.IndexStatus(json.Index.Status))
+	fmt.Println(formatter.Master(json.Cluster.LocalNode.Master))
+	fmt.Println(formatter.NodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen))
+	fmt.Println(formatter.Uptime(json.Jvm.UpTime))
+	fmt.Println(formatter.Version(json.Product.Version))
 }
 
 func hostsIsEpmty(hosts []string) bool {
