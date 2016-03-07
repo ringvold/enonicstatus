@@ -1,6 +1,7 @@
 noProxy: false
 jsonPath: "/enoniccms4.7.json"
 hosts: "localhost:2015,localhost:2015"
+format: terminal
 utv:
   hosts: "utv.localhost:2016"
   jsonPath: "/utvpath"

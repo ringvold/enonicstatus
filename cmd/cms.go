@@ -30,6 +30,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/haraldringvold/enonicstatus/jsonstruct"
 	"github.com/haraldringvold/enonicstatus/formatter"
@@ -39,9 +40,6 @@ type GetJsonResult struct {
 	json  jsonstruct.Status
 	error error
 }
-
-var printLinePrefix string = "|- "
-var printLineHeaderPrefix string = "# "
 
 const hostsViperPath = "hosts"
 const jsonPathViperPath = "jsonPath"
@@ -59,6 +57,9 @@ var CmsCmd = &cobra.Command{
 
 		path := GetPath(env)
 		hosts := GetHosts(env)
+
+		selectedFormatter := GetFormatter(viper.GetString(formatFlag))
+
 
 		Debug("Path: ", path)
 		Debug("Hosts: ", hosts)
@@ -86,7 +87,7 @@ var CmsCmd = &cobra.Command{
 					fmt.Println("")
 					fmt.Println(result.error.Error())
 				} else {
-					printStatus(result.json)
+					printStatus(result.json, selectedFormatter)
 				}
 			}
 		}
@@ -98,15 +99,14 @@ func init() {
 	RootCmd.AddCommand(CmsCmd)
 }
 
-func printStatus(json jsonstruct.Status) {
-	formatter := new(formatter.TerminalFormatter)
+func printStatus(json jsonstruct.Status, selectedFormatter formatter.Formatter) {
 	fmt.Println("")
-	fmt.Println(formatter.HostName(json.Cluster.LocalNode.HostName))
-	fmt.Println(formatter.IndexStatus(json.Index.Status))
-	fmt.Println(formatter.Master(json.Cluster.LocalNode.Master))
-	fmt.Println(formatter.NodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen))
-	fmt.Println(formatter.Uptime(json.Jvm.UpTime))
-	fmt.Println(formatter.Version(json.Product.Version))
+	fmt.Println(selectedFormatter.HostName(json.Cluster.LocalNode.HostName))
+	fmt.Println(selectedFormatter.IndexStatus(json.Index.Status))
+	fmt.Println(selectedFormatter.Master(json.Cluster.LocalNode.Master))
+	fmt.Println(selectedFormatter.NodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen))
+	fmt.Println(selectedFormatter.Uptime(json.Jvm.UpTime))
+	fmt.Println(selectedFormatter.Version(json.Product.Version))
 }
 
 func hostsIsEpmty(hosts []string) bool {

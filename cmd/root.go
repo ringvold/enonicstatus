@@ -26,6 +26,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/haraldringvold/enonicstatus/formatter"
 )
 
 var cfgFile string
@@ -39,6 +41,7 @@ const hostsFlag string = "hosts"
 const jsonPathFlag string = "jsonPath"
 const jsonPathFlagDefault string = "/status"
 const noProxyFlag string = "noProxy"
+const formatFlag string = "format"
 
 // This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -80,10 +83,12 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.enonicstatus.yaml)")
 	RootCmd.PersistentFlags().StringVar(&hosts, hostsFlag, "", "enonic nodes to check")
 	RootCmd.PersistentFlags().StringVar(&jsonPath, jsonPathFlag, jsonPathFlagDefault, "path on host to status json")
+	RootCmd.PersistentFlags().String(formatFlag, "plain", "output format [plain, terminal]")
 	RootCmd.PersistentFlags().BoolVar(&debugEnabled, "debug", false, "show more information on errors")
 	RootCmd.PersistentFlags().Bool(noProxyFlag, false, "do not use the system set proxy")
 
 	viper.BindPFlag(noProxyFlag, RootCmd.PersistentFlags().Lookup(noProxyFlag))
+	viper.BindPFlag(formatFlag, RootCmd.PersistentFlags().Lookup(formatFlag))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -102,7 +107,19 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		Debug("Using config file:", viper.ConfigFileUsed())
+	}
+}
+
+func GetFormatter(format string) formatter.Formatter {
+	switch format {
+	case "plain":
+		return new(formatter.PlainFormatter)
+	case "terminal":
+		return new(formatter.TerminalFormatter)
+	default:
+		fmt.Printf("WARN: Could not find spesified formatter %#v. Using plain format.\n", format)
+		return new(formatter.PlainFormatter)
 	}
 }
 
