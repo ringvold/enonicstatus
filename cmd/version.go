@@ -31,8 +31,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const VersionNumber = 0.2
-const VersionSuffix = "-DEV" // blank this when doing a releas
+const VersionNumber = 0.3
+const VersionSuffix = "" // blank this when doing a releas
 
 var (
 	CommitHash string
