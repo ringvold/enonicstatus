@@ -32,7 +32,7 @@ import (
 )
 
 const VersionNumber = "0.3.2"
-const VersionSuffix = "" // blank this when doing a release
+const VersionSuffix = "-DEV" // blank this when doing a release
 
 var (
 	CommitHash string
