@@ -31,8 +31,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const VersionNumber = 0.3.1
-const VersionSuffix = "" // blank this when doing a releas
+const VersionNumber = "0.3.2"
+const VersionSuffix = "" // blank this when doing a release
 
 var (
 	CommitHash string
@@ -98,10 +98,10 @@ func EnonicstatusVersion() string {
 	return enonicstatusVersion(VersionNumber, VersionSuffix)
 }
 
-func enonicstatusVersion(version float32, suffix string) string {
-	return fmt.Sprintf("%.2g%s", version, suffix)
+func enonicstatusVersion(version string, suffix string) string {
+	return fmt.Sprint(version, suffix)
 }
 
-func enonicstatusVersionNoSuffix(version float32) string {
-	return fmt.Sprintf("%.2g", version)
+func enonicstatusVersionNoSuffix(version string) string {
+	return fmt.Sprint(version)
 }
