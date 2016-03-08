@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"bytes"
 
 	"github.com/wsxiaoys/terminal/color"
+
+	"github.com/haraldringvold/enonicstatus/jsonstruct"
 )
 
 type Formatter interface {
@@ -15,6 +18,7 @@ type Formatter interface {
 	NodesSeen(float64) string
 	Uptime(float64) string
 	Version(string) string
+	String(jsonstruct.Status) string
 }
 
 var linePrefix string = "|- "
@@ -48,6 +52,19 @@ func (p PlainFormatter) Uptime(uptime float64) string {
 
 func (p PlainFormatter) Version(version string) string {
 	return fmt.Sprint(linePrefix, "Version: ", version)
+}
+
+func (p PlainFormatter) String(json jsonstruct.Status) string {
+	var buffer bytes.Buffer
+
+	buffer.WriteString(p.HostName(json.Cluster.LocalNode.HostName) + "\n")
+	buffer.WriteString(p.IndexStatus(json.Index.Status) + "\n")
+	buffer.WriteString(p.Master(json.Cluster.LocalNode.Master) + "\n")
+	buffer.WriteString(p.NodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen) + "\n")
+	buffer.WriteString(p.Uptime(json.Jvm.UpTime) + "\n")
+	buffer.WriteString(p.Version(json.Product.Version) + "\n")
+
+	return buffer.String()
 }
 
 type TerminalFormatter struct {
@@ -94,4 +111,17 @@ func (p TerminalFormatter) Uptime(uptime float64) string {
 
 func (p TerminalFormatter) Version(version string) string {
 	return fmt.Sprint(linePrefix, "Version: ", version)
+}
+
+func (p TerminalFormatter) String(json jsonstruct.Status) string {
+	var buffer bytes.Buffer
+
+	buffer.WriteString(p.HostName(json.Cluster.LocalNode.HostName) + "\n")
+	buffer.WriteString(p.IndexStatus(json.Index.Status) + "\n")
+	buffer.WriteString(p.Master(json.Cluster.LocalNode.Master) + "\n")
+	buffer.WriteString(p.NodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen) + "\n")
+	buffer.WriteString(p.Uptime(json.Jvm.UpTime) + "\n")
+	buffer.WriteString(p.Version(json.Product.Version) + "\n")
+
+	return buffer.String()
 }
