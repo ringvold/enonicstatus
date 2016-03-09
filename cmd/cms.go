@@ -80,6 +80,7 @@ var CmsCmd = &cobra.Command{
 			go func() { c <- getJson(*hostUrl) }()
 		}
 
+		var results []jsonstruct.Status
 		for i := 0; i < len(hostsSlice); i++ {
 			select {
 			case result := <-c:
@@ -87,10 +88,12 @@ var CmsCmd = &cobra.Command{
 					fmt.Println("")
 					fmt.Println(result.error.Error())
 				} else {
-					printStatus(result.json, selectedFormatter)
+					results = append(results, result.json)
 				}
 			}
 		}
+
+		printStatus(results, selectedFormatter)
 		return nil
 	},
 }
@@ -99,9 +102,9 @@ func init() {
 	RootCmd.AddCommand(CmsCmd)
 }
 
-func printStatus(json jsonstruct.Status, selectedFormatter formatter.Formatter) {
+func printStatus(results []jsonstruct.Status, selectedFormatter formatter.Formatter) {
 	fmt.Println("")
-	fmt.Println(selectedFormatter.String(json))
+	fmt.Println(selectedFormatter.String(results))
 }
 
 func hostsIsEpmty(hosts []string) bool {
