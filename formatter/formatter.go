@@ -18,7 +18,7 @@ type Formatter interface {
 	NodesSeen(float64) string
 	Uptime(float64) string
 	Version(string) string
-	String([]jsonstruct.Status) string
+	String(jsonstruct.Status) string
 }
 
 var linePrefix string = "|- "
@@ -54,17 +54,15 @@ func (p PlainFormatter) Version(version string) string {
 	return fmt.Sprint(linePrefix, "Version: ", version)
 }
 
-func (p PlainFormatter) String(json []jsonstruct.Status) string {
+func (p PlainFormatter) String(json jsonstruct.Status) string {
 	var buffer bytes.Buffer
-	for _, element := range json {
-		buffer.WriteString("\n")
-		buffer.WriteString(p.HostName(element.Cluster.LocalNode.HostName) + "\n")
-		buffer.WriteString(p.IndexStatus(element.Index.Status) + "\n")
-		buffer.WriteString(p.Master(element.Cluster.LocalNode.Master) + "\n")
-		buffer.WriteString(p.NodesSeen(element.Cluster.LocalNode.NumberOfNodesSeen) + "\n")
-		buffer.WriteString(p.Uptime(element.Jvm.UpTime) + "\n")
-		buffer.WriteString(p.Version(element.Product.Version) + "\n")
-	}
+	buffer.WriteString("\n")
+	buffer.WriteString(p.HostName(json.Cluster.LocalNode.HostName) + "\n")
+	buffer.WriteString(p.IndexStatus(json.Index.Status) + "\n")
+	buffer.WriteString(p.Master(json.Cluster.LocalNode.Master) + "\n")
+	buffer.WriteString(p.NodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen) + "\n")
+	buffer.WriteString(p.Uptime(json.Jvm.UpTime) + "\n")
+	buffer.WriteString(p.Version(json.Product.Version))
 	return buffer.String()
 }
 
@@ -114,16 +112,14 @@ func (t TerminalFormatter) Version(version string) string {
 	return fmt.Sprint(linePrefix, "Version: ", version)
 }
 
-func (t TerminalFormatter) String(json []jsonstruct.Status) string {
+func (t TerminalFormatter) String(json jsonstruct.Status) string {
 	var buffer bytes.Buffer
-	for _, element := range json {
-		buffer.WriteString("\n")
-		buffer.WriteString(t.HostName(element.Cluster.LocalNode.HostName) + "\n")
-		buffer.WriteString(t.IndexStatus(element.Index.Status) + "\n")
-		buffer.WriteString(t.Master(element.Cluster.LocalNode.Master) + "\n")
-		buffer.WriteString(t.NodesSeen(element.Cluster.LocalNode.NumberOfNodesSeen) + "\n")
-		buffer.WriteString(t.Uptime(element.Jvm.UpTime) + "\n")
-		buffer.WriteString(t.Version(element.Product.Version) + "\n")
-	}
+	buffer.WriteString("\n")
+	buffer.WriteString(t.HostName(json.Cluster.LocalNode.HostName) + "\n")
+	buffer.WriteString(t.IndexStatus(json.Index.Status) + "\n")
+	buffer.WriteString(t.Master(json.Cluster.LocalNode.Master) + "\n")
+	buffer.WriteString(t.NodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen) + "\n")
+	buffer.WriteString(t.Uptime(json.Jvm.UpTime) + "\n")
+	buffer.WriteString(t.Version(json.Product.Version))
 	return buffer.String()
 }

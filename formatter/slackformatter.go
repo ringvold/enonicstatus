@@ -44,35 +44,34 @@ func (s SlackFormatter) Version(version string) string {
 	return version
 }
 
-func (s SlackFormatter) String(jsonData []jsonstruct.Status) string {
+func (s SlackFormatter) String(jsonData jsonstruct.Status) string {
 	slackmessage := SlackMessage{Attachments: []SlackAttachment{}}
-	for _,element := range jsonData {
-		slackmessage.AddAttachment(SlackAttachment{
-					Fallback: s.HostName(element.Cluster.LocalNode.HostName) + "s index is " + s.IndexStatus(element.Index.Status),
-					Color:   s.SlackAttachmentColor(element.Index.Status),
-					Title: s.HostName(element.Cluster.LocalNode.HostName),
-					Fields: []SlackAttachmentField{
-						SlackAttachmentField{
-							Title: "Index",
-							Value: s.IndexStatus(element.Index.Status),
-							Inline: true},
-						SlackAttachmentField{
-							Title: "Master",
-							Value: s.Master(element.Cluster.LocalNode.Master),
-							Inline: true},
-						SlackAttachmentField{
-							Title: "Nodes seen",
-							Value: s.NodesSeen(element.Cluster.LocalNode.NumberOfNodesSeen),
-							Inline: true},
-						SlackAttachmentField{
-							Title: "Uptime",
-							Value: s.Uptime(element.Jvm.UpTime),
-							Inline: true},
-						SlackAttachmentField{
-							Title: "Version",
-							Value: s.Version(element.Product.Version),
-							Inline: true}}})
-	}
+	slackmessage.AddAttachment(SlackAttachment{
+				Fallback: s.HostName(jsonData.Cluster.LocalNode.HostName) + "s index is " + s.IndexStatus(jsonData.Index.Status),
+				Color:   s.SlackAttachmentColor(jsonData.Index.Status),
+				Title: s.HostName(jsonData.Cluster.LocalNode.HostName),
+				Fields: []SlackAttachmentField{
+					SlackAttachmentField{
+						Title: "Index",
+						Value: s.IndexStatus(jsonData.Index.Status),
+						Inline: true},
+					SlackAttachmentField{
+						Title: "Master",
+						Value: s.Master(jsonData.Cluster.LocalNode.Master),
+						Inline: true},
+					SlackAttachmentField{
+						Title: "Nodes seen",
+						Value: s.NodesSeen(jsonData.Cluster.LocalNode.NumberOfNodesSeen),
+						Inline: true},
+					SlackAttachmentField{
+						Title: "Uptime",
+						Value: s.Uptime(jsonData.Jvm.UpTime),
+						Inline: true},
+					SlackAttachmentField{
+						Title: "Version",
+						Value: s.Version(jsonData.Product.Version),
+						Inline: true}}})
+
 	slackmessageAsJson, _ := json.Marshal(slackmessage)
 
 	return string(slackmessageAsJson)
