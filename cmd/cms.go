@@ -99,14 +99,8 @@ func init() {
 	RootCmd.AddCommand(CmsCmd)
 }
 
-func printStatus(json jsonstruct.Status, selectedFormatter formatter.Formatter) {
-	fmt.Println("")
-	fmt.Println(selectedFormatter.HostName(json.Cluster.LocalNode.HostName))
-	fmt.Println(selectedFormatter.IndexStatus(json.Index.Status))
-	fmt.Println(selectedFormatter.Master(json.Cluster.LocalNode.Master))
-	fmt.Println(selectedFormatter.NodesSeen(json.Cluster.LocalNode.NumberOfNodesSeen))
-	fmt.Println(selectedFormatter.Uptime(json.Jvm.UpTime))
-	fmt.Println(selectedFormatter.Version(json.Product.Version))
+func printStatus(results jsonstruct.Status, selectedFormatter formatter.Formatter) {
+	fmt.Println(selectedFormatter.String(results))
 }
 
 func hostsIsEpmty(hosts []string) bool {

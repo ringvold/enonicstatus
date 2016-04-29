@@ -83,7 +83,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.enonicstatus.yaml)")
 	RootCmd.PersistentFlags().StringVar(&hosts, hostsFlag, "", "enonic nodes to check")
 	RootCmd.PersistentFlags().StringVar(&jsonPath, jsonPathFlag, jsonPathFlagDefault, "path on host to status json")
-	RootCmd.PersistentFlags().String(formatFlag, "plain", "output format [plain, terminal]")
+	RootCmd.PersistentFlags().String(formatFlag, "plain", "output format [plain, terminal, slack]")
 	RootCmd.PersistentFlags().BoolVar(&debugEnabled, "debug", false, "show more information on errors")
 	RootCmd.PersistentFlags().Bool(noProxyFlag, false, "do not use the system set proxy")
 
@@ -117,6 +117,8 @@ func GetFormatter(format string) formatter.Formatter {
 		return new(formatter.PlainFormatter)
 	case "terminal":
 		return new(formatter.TerminalFormatter)
+	case "slack":
+		return new(formatter.SlackFormatter)
 	default:
 		fmt.Printf("WARN: Could not find spesified formatter %#v. Using plain format.\n", format)
 		return new(formatter.PlainFormatter)
