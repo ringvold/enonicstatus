@@ -22,12 +22,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
-	"time"
 
-	"github.com/kardianos/osext"
 	"github.com/spf13/cobra"
 )
 
@@ -45,15 +41,10 @@ var versionCmd = &cobra.Command{
 	Short: "Print the verson number",
 	Long:  `Shows the version. Pretty simple.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if BuildDate == "" {
-			setBuildDate() // set the build date from executable's mdate
-		} else {
-			formatBuildDate() // format the compile time
-		}
 		if CommitHash == "" {
-			fmt.Printf("Enonicstatus v%s BuildDate: %s\n", EnonicstatusVersion(), BuildDate)
+			fmt.Printf("Enonicstatus v%s", EnonicstatusVersion())
 		} else {
-			fmt.Printf("Enonicstatus v%s-%s BuildDate: %s\n", EnonicstatusVersion(), strings.ToUpper(CommitHash), BuildDate)
+			fmt.Printf("Enonicstatus v%s-%s", EnonicstatusVersion(), strings.ToUpper(CommitHash))
 		}
 
 		return nil
@@ -62,36 +53,6 @@ var versionCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(versionCmd)
-}
-
-// setBuildDate checks the ModTime of the Hugo executable and returns it as a
-// formatted string.  This assumes that the executable name is Hugo, if it does
-// not exist, an empty string will be returned.  This is only called if the
-// BuildDate wasn't set during compile time.
-//
-// osext is used for cross-platform.
-// Code from Hugo https://github.com/spf13/hugo/blob/master/commands/version.go
-func setBuildDate() {
-	fname, _ := osext.Executable()
-	dir, err := filepath.Abs(filepath.Dir(fname))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fi, err := os.Lstat(filepath.Join(dir, filepath.Base(fname)))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	t := fi.ModTime()
-	BuildDate = t.Format(time.RFC3339)
-}
-
-// formatBuildDate formats the BuildDate according to the value in
-// .Params.DateFormat, if it's set.
-func formatBuildDate() {
-	t, _ := time.Parse("2006-01-02T15:04:05-0700", BuildDate)
-	BuildDate = t.Format(time.RFC3339)
 }
 
 func EnonicstatusVersion() string {

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/haraldringvold/enonicstatus/jsonstruct"
+	"github.com/ringvold/enonicstatus/jsonstruct"
 )
 
 var green string = "#36a64f"
@@ -47,30 +47,30 @@ func (s SlackFormatter) Version(version string) string {
 func (s SlackFormatter) String(jsonData jsonstruct.Status) string {
 	slackmessage := SlackMessage{Attachments: []SlackAttachment{}}
 	slackmessage.AddAttachment(SlackAttachment{
-				Fallback: s.HostName(jsonData.Cluster.LocalNode.HostName) + "s index is " + s.IndexStatus(jsonData.Index.Status),
-				Color:   s.SlackAttachmentColor(jsonData.Index.Status),
-				Title: s.HostName(jsonData.Cluster.LocalNode.HostName),
-				Fields: []SlackAttachmentField{
-					SlackAttachmentField{
-						Title: "Index",
-						Value: s.IndexStatus(jsonData.Index.Status),
-						Inline: true},
-					SlackAttachmentField{
-						Title: "Master",
-						Value: s.Master(jsonData.Cluster.LocalNode.Master),
-						Inline: true},
-					SlackAttachmentField{
-						Title: "Nodes seen",
-						Value: s.NodesSeen(jsonData.Cluster.LocalNode.NumberOfNodesSeen),
-						Inline: true},
-					SlackAttachmentField{
-						Title: "Uptime",
-						Value: s.Uptime(jsonData.Jvm.UpTime),
-						Inline: true},
-					SlackAttachmentField{
-						Title: "Version",
-						Value: s.Version(jsonData.Product.Version),
-						Inline: true}}})
+		Fallback: s.HostName(jsonData.Cluster.LocalNode.HostName) + "s index is " + s.IndexStatus(jsonData.Index.Status),
+		Color:    s.SlackAttachmentColor(jsonData.Index.Status),
+		Title:    s.HostName(jsonData.Cluster.LocalNode.HostName),
+		Fields: []SlackAttachmentField{
+			SlackAttachmentField{
+				Title:  "Index",
+				Value:  s.IndexStatus(jsonData.Index.Status),
+				Inline: true},
+			SlackAttachmentField{
+				Title:  "Master",
+				Value:  s.Master(jsonData.Cluster.LocalNode.Master),
+				Inline: true},
+			SlackAttachmentField{
+				Title:  "Nodes seen",
+				Value:  s.NodesSeen(jsonData.Cluster.LocalNode.NumberOfNodesSeen),
+				Inline: true},
+			SlackAttachmentField{
+				Title:  "Uptime",
+				Value:  s.Uptime(jsonData.Jvm.UpTime),
+				Inline: true},
+			SlackAttachmentField{
+				Title:  "Version",
+				Value:  s.Version(jsonData.Product.Version),
+				Inline: true}}})
 
 	slackmessageAsJson, _ := json.Marshal(slackmessage)
 
@@ -99,14 +99,14 @@ func (sm *SlackMessage) AddAttachment(attachment SlackAttachment) []SlackAttachm
 }
 
 type SlackAttachment struct {
-	Fallback string `json:"fallback"`
-	Color string `json:"color"`
-	Title string `json:"title"`
-	Fields []SlackAttachmentField `json:"fields"`
+	Fallback string                 `json:"fallback"`
+	Color    string                 `json:"color"`
+	Title    string                 `json:"title"`
+	Fields   []SlackAttachmentField `json:"fields"`
 }
 
 type SlackAttachmentField struct {
-	Title string `json:"title"`
-	Value string `json:"value"`
-	Inline bool `json:"short"`
+	Title  string `json:"title"`
+	Value  string `json:"value"`
+	Inline bool   `json:"short"`
 }

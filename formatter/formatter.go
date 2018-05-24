@@ -1,14 +1,14 @@
 package formatter
 
 import (
+	"bytes"
 	"fmt"
 	"strconv"
 	"time"
-	"bytes"
 
 	"github.com/wsxiaoys/terminal/color"
 
-	"github.com/haraldringvold/enonicstatus/jsonstruct"
+	"github.com/ringvold/enonicstatus/jsonstruct"
 )
 
 type Formatter interface {

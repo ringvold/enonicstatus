@@ -28,12 +28,13 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/haraldringvold/enonicstatus/jsonstruct"
-	"github.com/haraldringvold/enonicstatus/formatter"
+	"github.com/ringvold/enonicstatus/formatter"
+	"github.com/ringvold/enonicstatus/jsonstruct"
 )
 
 type GetJsonResult struct {
@@ -47,7 +48,7 @@ const jsonPathViperPath = "jsonPath"
 // cmsCmd represents the status command
 var CmsCmd = &cobra.Command{
 	Use:   "cms",
-	Short: "Shows status Enonic CMS nodes",
+	Short: "Shows status for Enonic CMS nodes",
 	Long:  `Extracts and diplays index status, uptime and master status for earch node`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		env := ""
@@ -59,7 +60,6 @@ var CmsCmd = &cobra.Command{
 		hosts := GetHosts(env)
 
 		selectedFormatter := GetFormatter(viper.GetString(formatFlag))
-
 
 		Debug("Path: ", path)
 		Debug("Hosts: ", hosts)
@@ -114,9 +114,14 @@ func hostsIsEpmty(hosts []string) bool {
 }
 
 func getJson(url url.URL) GetJsonResult {
+	timeout := time.Duration(10 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
+
 	res := new(GetJsonResult)
 
-	resp, err := http.Get(url.String())
+	resp, err := client.Get(url.String())
 	if err != nil {
 		// TODO: Add debug statements?
 		res.error = errors.New(fmt.Sprintf("Error: Could not connect to host %q. Is it correct?", &url))
